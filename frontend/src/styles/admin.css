@@ -1,0 +1,382 @@
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.reports-list h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.reports-list table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  flex: 1;
+  overflow: auto;
+}
+
+.reports-list thead {
+  background: var(--gray-100);
+  position: sticky;
+  top: 0;
+}
+
+.reports-list th {
+  text-align: left;
+  padding: 10px 8px;
+  font-weight: 600;
+  color: var(--gray-700);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.reports-list td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.reports-list tbody tr {
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.reports-list tbody tr:hover {
+  background: var(--gray-50);
+}
+
+.reports-list tbody tr.selected {
+  background: #DBEAFE;
+  border-left: 3px solid var(--primary);
+}
+
+.reports-list .id {
+  font-weight: 600;
+  color: var(--primary);
+  width: 50px;
+}
+
+.reports-list .description {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--gray-600);
+}
+
+.reports-list .date {
+  color: var(--gray-600);
+  width: 90px;
+  font-size: 11px;
+}
+
+.reports-list .action {
+  width: 50px;
+}
+
+.reports-list .action button {
+  padding: 4px 8px;
+  font-size: 11px;
+  background: var(--primary);
+  color: white;
+  border-radius: 4px;
+}
+
+.status-badge {
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Modal Overrides */
+.modal-content {
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.modal-content .report-details {
+  background: var(--gray-100);
+  padding: 16px;
+  border-radius: var(--border-radius);
+  margin-bottom: 24px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.modal-content .report-details p {
+  font-size: 13px;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.modal-content .form-group {
+  margin-bottom: 16px;
+}
+
+.modal-content .form-group label {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--gray-700);
+  margin-bottom: 6px;
+}
+
+.modal-content .form-group input,
+.modal-content .form-group select,
+.modal-content .form-group textarea {
+  width: 100%;
+  font-size: 13px;
+}
+
+.modal-content textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-content .button-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.modal-content .button-group button {
+  flex: 1;
+  padding: 10px 16px;
+}
+
+.modal-content .button-group button[type="submit"] {
+  background: var(--success);
+  color: white;
+}
+
+.modal-content .button-group button[type="button"] {
+  background: var(--gray-200);
+  color: var(--gray-900);
+}
+
+.modal-content.large {
+  max-width: 700px;
+  width: 90%;
+}
+
+.modal-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.tab-btn {
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--gray-600);
+  transition: var(--transition);
+}
+
+.tab-btn:hover {
+  color: var(--primary);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.route-directions {
+  padding: 16px;
+  background: var(--gray-50);
+  border-radius: var(--border-radius);
+}
+
+.route-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: white;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-200);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.summary-item .label {
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.summary-item .value {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.route-steps {
+  margin-bottom: 16px;
+}
+
+.route-steps h4 {
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--gray-900);
+}
+
+.route-steps ol {
+  list-style: decimal;
+  margin-left: 20px;
+  background: white;
+  padding: 12px 16px;
+  border-radius: var(--border-radius);
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--gray-200);
+}
+
+.route-steps li {
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--gray-700);
+}
+
+.route-steps li.more-steps {
+  font-style: italic;
+  color: var(--gray-500);
+  margin-top: 8px;
+}
+
+.step-text {
+  display: block;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.maps-button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #34A853 0%, #1E8E3E 100%);
+  color: white;
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 8px;
+}
+
+.maps-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);
+}
+
+.loading {
+  text-align: center;
+  color: var(--gray-600);
+  font-size: 13px;
+  padding: 12px;
+}
+
+.info-text {
+  text-align: center;
+  color: var(--gray-500);
+  font-size: 12px;
+  padding: 12px;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .reports-list {
+    max-height: 300px;
+  }
+
+  .reports-list h3 {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .reports-list table {
+    font-size: 10px;
+  }
+
+  .reports-list th,
+  .reports-list td {
+    padding: 6px 3px;
+  }
+
+  .reports-list .description {
+    max-width: 70px;
+  }
+
+  .reports-list .action button {
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reports-list {
+    max-height: 220px;
+    gap: 6px;
+  }
+
+  .reports-list h3 {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+
+  .reports-list table {
+    font-size: 9px;
+  }
+
+  .reports-list th {
+    padding: 4px 2px;
+    font-size: 8px;
+  }
+
+  .reports-list td {
+    padding: 4px 2px;
+  }
+
+  .reports-list .id {
+    width: 30px;
+  }
+
+  .reports-list .description {
+    max-width: 50px;
+    font-size: 8px;
+  }
+
+  .reports-list .date {
+    width: 60px;
+    font-size: 8px;
+  }
+
+  .reports-list .action {
+    width: 40px;
+  }
+
+  .reports-list .action button {
+    padding: 2px 4px;
+    font-size: 8px;
+  }
+}

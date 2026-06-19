@@ -1,0 +1,264 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #3B82F6;
+  --danger: #EF4444;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --gray-900: #111827;
+  --gray-800: #1F2937;
+  --gray-700: #374151;
+  --gray-600: #4B5563;
+  --gray-300: #D1D5DB;
+  --gray-200: #E5E7EB;
+  --gray-100: #F3F4F6;
+  --border-radius: 8px;
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f9fafb;
+  color: var(--gray-900);
+  line-height: 1.6;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  padding: 10px 12px;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.error-message {
+  background: #FEE2E2;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 12px 16px;
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+}
+
+.success-message {
+  background: #DCFCE7;
+  border: 1px solid var(--success);
+  color: var(--success);
+  padding: 12px 16px;
+  border-radius: var(--border-radius);
+  margin-bottom: 16px;
+}
+
+.info-text {
+  color: var(--gray-600);
+  font-size: 13px;
+  margin-top: 12px;
+}
+
+/* Leaflet overrides - estilo Google Maps */
+.leaflet-container {
+  font-family: inherit;
+  background: #e5e3df;
+}
+
+.leaflet-tile-pane {
+  filter: saturate(1.2) contrast(1.1);
+}
+
+.leaflet-control-zoom {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 4px !important;
+}
+
+.leaflet-control-zoom a {
+  background-color: white !important;
+  color: #666 !important;
+  border: 1px solid #ccc !important;
+  box-shadow: none !important;
+}
+
+.leaflet-control-zoom a:first-child {
+  border-bottom: 1px solid #ccc !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: none;
+}
+
+.leaflet-popup-tip {
+  background-color: white;
+}
+
+.leaflet-popup-content {
+  font-size: 12px;
+  margin: 8px;
+  color: #333;
+}
+
+.popup-content p {
+  margin: 4px 0;
+  font-size: 12px;
+}
+
+.leaflet-control-attribution {
+  font-size: 10px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  :root {
+    --border-radius: 6px;
+  }
+
+  .container {
+    padding: 12px;
+  }
+
+  button {
+    padding: 8px 12px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  input, textarea, select {
+    padding: 8px 10px;
+    font-size: 13px;
+    min-height: 40px;
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: 4px;
+  }
+
+  .leaflet-popup-content {
+    font-size: 11px;
+    margin: 6px;
+  }
+
+  .popup-content p {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --border-radius: 4px;
+  }
+
+  body {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 8px;
+  }
+
+  button {
+    padding: 10px 12px;
+    font-size: 12px;
+    min-height: 44px;
+    border-radius: 4px;
+  }
+
+  input, textarea, select {
+    padding: 8px;
+    font-size: 12px;
+    min-height: 40px;
+    border-radius: 4px;
+  }
+
+  textarea {
+    min-height: 60px;
+  }
+
+  .error-message,
+  .success-message,
+  .info-text {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  .leaflet-control-zoom {
+    border-radius: 3px !important;
+  }
+
+  .leaflet-control-zoom a {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    font-size: 13px !important;
+  }
+}

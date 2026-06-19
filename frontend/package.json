@@ -1,0 +1,29 @@
+{
+  "name": "alumbrado-publico-frontend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Frontend para sistema de reportes de alumbrado público",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": ["alumbrado", "reportes", "react", "leaflet"],
+  "author": "Tu Nombre",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.10.1",
+    "leaflet": "^1.9.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.0",
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.10.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^4.3.0"
+  }
+}

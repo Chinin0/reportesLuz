@@ -15,23 +15,22 @@ export default function BottomSheet({ children, isOpen }) {
     }
   }, [isOpen])
 
-  const handleMouseDown = (e) => {
+  const handleTouchStart = (e) => {
     setIsDragging(true)
-    setDragStart(e.clientY)
-    e.preventDefault()
+    setDragStart(e.touches[0].clientY)
   }
 
-  const handleMouseMove = (e) => {
+  const handleTouchMove = (e) => {
     if (!isDragging) return
-
-    const diff = e.clientY - dragStart
+    e.preventDefault()
+    const diff = e.touches[0].clientY - dragStart
     const percent = Math.max(15, Math.min(85, translateY + (diff / window.innerHeight) * 100))
     setTranslateY(percent)
   }
 
-  const handleMouseUp = () => {
+  const handleTouchEnd = (e) => {
+    e.preventDefault()
     setIsDragging(false)
-
     if (translateY > 70) {
       setTranslateY(85)
     } else if (translateY < 40) {
@@ -39,25 +38,11 @@ export default function BottomSheet({ children, isOpen }) {
     }
   }
 
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-      }
-    }
-  }, [isDragging, dragStart, translateY])
-
   return (
     <>
       {isOpen && (
         <div
           className="bottom-sheet-overlay"
-          onClick={(e) => {
-            setTranslateY(100)
-          }}
           style={{
             opacity: Math.max(0, 1 - translateY / 100),
             pointerEvents: translateY > 80 ? 'none' : 'auto',
@@ -71,31 +56,13 @@ export default function BottomSheet({ children, isOpen }) {
         style={{
           transform: `translateY(${translateY}%)`,
         }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         <div
           className="bottom-sheet-handle"
-          onMouseDown={handleMouseDown}
-          onTouchStart={(e) => {
-            setIsDragging(true)
-            setDragStart(e.touches[0].clientY)
-            e.preventDefault()
-          }}
-          onTouchMove={(e) => {
-            if (!isDragging) return
-            const diff = e.touches[0].clientY - dragStart
-            const percent = Math.max(15, Math.min(85, translateY + (diff / window.innerHeight) * 100))
-            setTranslateY(percent)
-            e.preventDefault()
-          }}
-          onTouchEnd={(e) => {
-            setIsDragging(false)
-            if (translateY > 70) {
-              setTranslateY(85)
-            } else if (translateY < 40) {
-              setTranslateY(15)
-            }
-            e.preventDefault()
-          }}
+          style={{ cursor: 'grab' }}
         >
           <div className="bottom-sheet-line" />
           <span className="bottom-sheet-title">Detalles del Reporte</span>

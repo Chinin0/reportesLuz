@@ -21,10 +21,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rutas de API
-app.use('/api', reportRoutes);
-
-// Ruta de login para admin
+// Ruta de login para admin (ANTES de las rutas generales)
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -52,6 +49,9 @@ app.post('/api/auth/login', async (req, res) => {
     });
   }
 });
+
+// Rutas de API
+app.use('/api', reportRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

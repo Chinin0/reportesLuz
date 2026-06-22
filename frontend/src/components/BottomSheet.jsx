@@ -20,7 +20,7 @@ export default function BottomSheet({ children, isOpen }) {
       <div
         className="bottom-sheet-persistent"
         style={{
-          transform: isExpanded ? 'translateY(15%)' : 'translateY(85%)',
+          transform: isExpanded ? 'translateY(15%)' : 'translateY(80%)',
         }}
       >
         <div

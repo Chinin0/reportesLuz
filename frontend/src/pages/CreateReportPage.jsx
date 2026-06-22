@@ -43,7 +43,7 @@ export default function CreateReportPage() {
           <ReportMap onLocationSelect={handleLocationSelect} selectedLocation={selectedLocation} onMapReady={setMapInstance} />
           {selectedLocation && (
             <div className="location-badge">
-              📍 Ubicación: {selectedLocation.latitude.toFixed(4)}, {selectedLocation.longitude.toFixed(4)}
+              📍 Ubicacioon: {selectedLocation.latitude.toFixed(4)}, {selectedLocation.longitude.toFixed(4)}
             </div>
           )}
         </div>

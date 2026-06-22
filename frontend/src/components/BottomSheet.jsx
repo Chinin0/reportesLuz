@@ -4,12 +4,21 @@ import '../styles/bottomsheet.css'
 export default function BottomSheet({ children, isOpen }) {
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState(0)
-  const [translateY, setTranslateY] = useState(85)
+  const [translateY, setTranslateY] = useState(100)
   const sheetRef = useRef(null)
+
+  useEffect(() => {
+    if (isOpen) {
+      setTranslateY(70)
+    } else {
+      setTranslateY(100)
+    }
+  }, [isOpen])
 
   const handleMouseDown = (e) => {
     setIsDragging(true)
     setDragStart(e.clientY)
+    e.preventDefault()
   }
 
   const handleMouseMove = (e) => {
@@ -23,64 +32,79 @@ export default function BottomSheet({ children, isOpen }) {
   const handleMouseUp = () => {
     setIsDragging(false)
 
-    // Snap a posición cercana
     if (translateY > 70) {
-      setTranslateY(85) // Pico mínimo
+      setTranslateY(85)
     } else if (translateY < 40) {
-      setTranslateY(15) // Expandido
+      setTranslateY(15)
     }
   }
 
   useEffect(() => {
     if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove)
-      window.addEventListener('mouseup', handleMouseUp)
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
       return () => {
-        window.removeEventListener('mousemove', handleMouseMove)
-        window.removeEventListener('mouseup', handleMouseUp)
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('mouseup', handleMouseUp)
       }
     }
   }, [isDragging, dragStart, translateY])
 
   return (
-    <div
-      ref={sheetRef}
-      className="bottom-sheet-persistent"
-      style={{
-        transform: `translateY(${translateY}%)`,
-      }}
-    >
-      {/* Drag Handle */}
+    <>
+      {isOpen && (
+        <div
+          className="bottom-sheet-overlay"
+          onClick={(e) => {
+            setTranslateY(100)
+          }}
+          style={{
+            opacity: Math.max(0, 1 - translateY / 100),
+            pointerEvents: translateY > 80 ? 'none' : 'auto',
+          }}
+        />
+      )}
+
       <div
-        className="bottom-sheet-handle"
-        onMouseDown={handleMouseDown}
-        onTouchStart={(e) => {
-          setIsDragging(true)
-          setDragStart(e.touches[0].clientY)
-        }}
-        onTouchMove={(e) => {
-          if (!isDragging) return
-          const diff = e.touches[0].clientY - dragStart
-          const percent = Math.max(15, Math.min(85, translateY + (diff / window.innerHeight) * 100))
-          setTranslateY(percent)
-        }}
-        onTouchEnd={() => {
-          setIsDragging(false)
-          if (translateY > 70) {
-            setTranslateY(85)
-          } else if (translateY < 40) {
-            setTranslateY(15)
-          }
+        ref={sheetRef}
+        className="bottom-sheet-persistent"
+        style={{
+          transform: `translateY(${translateY}%)`,
         }}
       >
-        <div className="bottom-sheet-line" />
-        <span className="bottom-sheet-title">Detalles del Reporte</span>
-      </div>
+        <div
+          className="bottom-sheet-handle"
+          onMouseDown={handleMouseDown}
+          onTouchStart={(e) => {
+            setIsDragging(true)
+            setDragStart(e.touches[0].clientY)
+            e.preventDefault()
+          }}
+          onTouchMove={(e) => {
+            if (!isDragging) return
+            const diff = e.touches[0].clientY - dragStart
+            const percent = Math.max(15, Math.min(85, translateY + (diff / window.innerHeight) * 100))
+            setTranslateY(percent)
+            e.preventDefault()
+          }}
+          onTouchEnd={(e) => {
+            setIsDragging(false)
+            if (translateY > 70) {
+              setTranslateY(85)
+            } else if (translateY < 40) {
+              setTranslateY(15)
+            }
+            e.preventDefault()
+          }}
+        >
+          <div className="bottom-sheet-line" />
+          <span className="bottom-sheet-title">Detalles del Reporte</span>
+        </div>
 
-      {/* Content con Scroll */}
-      <div className="bottom-sheet-content">
-        {children}
+        <div className="bottom-sheet-content">
+          {children}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

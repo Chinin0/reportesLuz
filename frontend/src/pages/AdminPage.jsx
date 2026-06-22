@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import AdminMap from '../components/Admin/AdminMap'
 import ReportsList from '../components/Admin/ReportsList'
 import RouteDirections from '../components/Admin/RouteDirections'
+import BottomSheet from '../components/BottomSheet'
 import { exportReportToPDF } from '../utils/mapExport'
 import '../styles/pages.css'
 
@@ -11,6 +12,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({ status: '', priority: '' })
   const [userLocation, setUserLocation] = useState(null)
+  const [showDetailSheet, setShowDetailSheet] = useState(false)
 
   useEffect(() => {
     fetchReports()
@@ -53,6 +55,12 @@ export default function AdminPage() {
   const handleReportUpdate = () => {
     fetchReports()
     setSelectedReport(null)
+    setShowDetailSheet(false)
+  }
+
+  const handleSelectReport = (report) => {
+    setSelectedReport(report)
+    setShowDetailSheet(true)
   }
 
   return (
@@ -64,7 +72,7 @@ export default function AdminPage() {
 
       <div className="admin-grid">
         <div className="admin-map-section">
-          <AdminMap reports={reports} selectedReport={selectedReport} onSelectReport={setSelectedReport} />
+          <AdminMap reports={reports} selectedReport={selectedReport} onSelectReport={handleSelectReport} />
         </div>
 
         <div className="admin-list-section">
@@ -98,14 +106,15 @@ export default function AdminPage() {
             <ReportsList
               reports={reports}
               selectedReport={selectedReport}
-              onSelect={setSelectedReport}
+              onSelect={handleSelectReport}
               onUpdate={handleReportUpdate}
             />
           )}
         </div>
       </div>
 
-      {selectedReport && (
+      {/* Desktop: Modal */}
+      {selectedReport && !showDetailSheet && (
         <ReportDetail
           report={selectedReport}
           onClose={() => setSelectedReport(null)}
@@ -113,11 +122,30 @@ export default function AdminPage() {
           userLocation={userLocation}
         />
       )}
+
+      {/* Mobile: Bottom Sheet */}
+      {selectedReport && (
+        <BottomSheet isOpen={showDetailSheet} onClose={() => {
+          setShowDetailSheet(false)
+          setSelectedReport(null)
+        }}>
+          <ReportDetail
+            report={selectedReport}
+            onClose={() => {
+              setShowDetailSheet(false)
+              setSelectedReport(null)
+            }}
+            onUpdate={handleReportUpdate}
+            userLocation={userLocation}
+            isBottomSheet={true}
+          />
+        </BottomSheet>
+      )}
     </div>
   )
 }
 
-function ReportDetail({ report, onClose, onUpdate, userLocation }) {
+function ReportDetail({ report, onClose, onUpdate, userLocation, isBottomSheet = false }) {
   const [formData, setFormData] = useState({
     status: report.status,
     priority: report.priority,
@@ -266,7 +294,105 @@ function ReportDetail({ report, onClose, onUpdate, userLocation }) {
     }
   }
 
-  return (
+  return isBottomSheet ? (
+    <div className="modal-content large" style={{ borderRadius: '0' }}>
+      <h2>Detalles del Reporte #{report.id}</h2>
+
+      <div className="modal-tabs">
+        <button
+          className={`tab-btn ${!showDirections ? 'active' : ''}`}
+          onClick={() => setShowDirections(false)}
+        >
+          Información
+        </button>
+        <button
+          className={`tab-btn ${showDirections ? 'active' : ''}`}
+          onClick={() => setShowDirections(true)}
+        >
+          Indicaciones 🗺️
+        </button>
+      </div>
+
+      {!showDirections ? (
+        <>
+          <div className="report-details">
+            <p><strong>Tipo:</strong> {report.problem_type}</p>
+            <p><strong>Descripción:</strong> {report.description}</p>
+            <p><strong>Ubicación:</strong> {report.address || `${report.latitude.toFixed(4)}, ${report.longitude.toFixed(4)}`}</p>
+            <p><strong>Reportero:</strong> {report.reporter_name || 'Anónimo'}</p>
+            <p><strong>Email:</strong> {report.reporter_email || 'No proporcionado'}</p>
+            <p><strong>Teléfono:</strong> {report.reporter_phone || 'No proporcionado'}</p>
+            <p><strong>Creado:</strong> {new Date(report.created_at).toLocaleDateString()}</p>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Estado</label>
+              <select name="status" value={formData.status} onChange={handleChange}>
+                <option value="pendiente">Pendiente</option>
+                <option value="asignado">Asignado</option>
+                <option value="en_progreso">En Progreso</option>
+                <option value="resuelto">Resuelto</option>
+                <option value="rechazado">Rechazado</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Prioridad</label>
+              <select name="priority" value={formData.priority} onChange={handleChange}>
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Asignado a</label>
+              <input
+                type="text"
+                name="assigned_to"
+                placeholder="Nombre de la cuadrilla"
+                value={formData.assigned_to}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Notas</label>
+              <textarea
+                name="admin_notes"
+                placeholder="Notas internas"
+                value={formData.admin_notes}
+                onChange={handleChange}
+              />
+            </div>
+
+            {error && <p className="error">{error}</p>}
+
+            <div className="button-group">
+              <button type="submit" disabled={loading}>
+                {loading ? 'Guardando...' : 'Guardar Cambios'}
+              </button>
+              <button
+                type="button"
+                onClick={handleExportPDF}
+                disabled={exporting}
+                style={{
+                  background: '#34A853',
+                  color: 'white',
+                }}
+              >
+                {exporting ? 'Exportando...' : '📥 Descargar PDF'}
+              </button>
+              <button type="button" onClick={onClose}>Cerrar</button>
+            </div>
+          </form>
+        </>
+      ) : (
+        <RouteDirections report={report} userLocation={userLocation} />
+      )}
+    </div>
+  ) : (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content large" onClick={(e) => e.stopPropagation()}>
         <h2>Detalles del Reporte #{report.id}</h2>

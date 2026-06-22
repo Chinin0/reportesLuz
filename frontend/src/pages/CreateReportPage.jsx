@@ -1,19 +1,23 @@
 import ReportMap from '../components/Map/ReportMap'
 import ReportForm from '../components/Forms/ReportForm'
+import BottomSheet from '../components/BottomSheet'
 import { useState } from 'react'
 import '../styles/pages.css'
 
 export default function CreateReportPage() {
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [submitted, setSubmitted] = useState(false)
+  const [showSheet, setShowSheet] = useState(false)
 
   const handleLocationSelect = (lat, lng) => {
     setSelectedLocation({ latitude: lat, longitude: lng })
+    setShowSheet(true) // Abrir bottom sheet cuando se selecciona ubicación
   }
 
   const handleFormSubmit = () => {
     setSubmitted(true)
     setSelectedLocation(null)
+    setShowSheet(false)
     setTimeout(() => setSubmitted(false), 3000)
   }
 
@@ -34,11 +38,18 @@ export default function CreateReportPage() {
           )}
         </div>
 
+        {/* Desktop: mostrar forma inline */}
         <div className="form-section">
           {submitted && <div className="success-message">✓ Reporte enviado correctamente!</div>}
           <ReportForm selectedLocation={selectedLocation} onSubmit={handleFormSubmit} />
         </div>
       </div>
+
+      {/* Mobile: Bottom sheet */}
+      <BottomSheet isOpen={showSheet} onClose={() => setShowSheet(false)}>
+        {submitted && <div className="success-message">✓ Reporte enviado correctamente!</div>}
+        <ReportForm selectedLocation={selectedLocation} onSubmit={handleFormSubmit} />
+      </BottomSheet>
     </div>
   )
 }

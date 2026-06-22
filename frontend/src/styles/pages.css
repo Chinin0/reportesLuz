@@ -349,32 +349,34 @@
     padding: 6px;
     gap: 4px;
     flex: 1;
+    grid-template-columns: 1fr; /* Una sola columna */
+  }
+
+  .map-section {
+    max-height: calc(100vh - 140px); /* Máximo altura para dejar espacio */
+    height: 100%;
+    flex: 1;
+  }
+
+  .form-section {
+    display: none; /* Ocultar el formulario inline en móvil */
   }
 
   .admin-grid {
     padding: 6px;
     gap: 4px;
     flex: 1;
-    max-height: calc(100vh - 100px);
-  }
-
-  .form-section {
-    padding: 8px;
-  }
-
-  .map-section {
-    min-height: 300px;
-    flex: 2;
+    grid-template-columns: 1fr; /* Una sola columna en móvil */
   }
 
   .admin-map-section {
-    min-height: 350px;
-    flex: 2;
+    max-height: calc(100vh - 140px); /* Máximo altura para dejar espacio */
+    height: 100%;
+    flex: 1;
   }
 
   .admin-list-section {
-    max-height: 250px;
-    flex: 1;
+    display: none; /* Ocultar lista en móvil */
   }
 
   .modal-content {

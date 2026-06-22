@@ -23,23 +23,8 @@ function LocationButton() {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords
+            // Solo centrar el mapa, sin agregar marcador
             map.setView([latitude, longitude], 15)
-
-            // Remover marcador anterior si existe
-            if (userMarker) {
-              map.removeLayer(userMarker)
-            }
-
-            // Agregar nuevo marcador
-            const newMarker = L.marker([latitude, longitude], {
-              icon: L.icon({
-                iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSI3IiBmaWxsPSIjMzI4MmY2Ii8+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzMyODJmNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjMiLz48L3N2Zz4=',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20],
-              }),
-            }).addTo(map).bindPopup('Tu ubicación actual')
-
-            setUserMarker(newMarker)
           },
           (error) => {
             console.error('Error de geolocalización:', error)

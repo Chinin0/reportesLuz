@@ -11,44 +11,46 @@ const markerIcon = new L.Icon({
   popupAnchor: [0, -10],
 })
 
-function LocationButton() {
-  const map = useMap()
-  const [userMarker, setUserMarker] = useState(null)
+// Icono para la ubicación actual (punto azul)
+const userLocationIcon = new L.Icon({
+  iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI4IiBmaWxsPSIjMzI4MmY2Ii8+PC9zdmc+',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, -10],
+})
 
-  const handleLocation = () => {
+function LocationButton({ onUserLocation, onIgnoreClick }) {
+  const map = useMap()
+
+  const handleLocation = (e) => {
+    e.stopPropagation() // Evitar que el click se registre en el mapa
+
+    // Activar flag para ignorar el próximo click en el mapa
+    onIgnoreClick(true)
+
     try {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
             const { latitude, longitude } = position.coords
+            // Centrar el mapa y mostrar ubicación
             map.setView([latitude, longitude], 15)
-
-            // Remover marcador anterior si existe
-            if (userMarker) {
-              map.removeLayer(userMarker)
-            }
-
-            // Agregar nuevo marcador
-            const newMarker = L.marker([latitude, longitude], {
-              icon: L.icon({
-                iconUrl: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSI3IiBmaWxsPSIjMzI4MmY2Ii8+PGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMTQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzMyODJmNiIgc3Ryb2tlLXdpZHRoPSIyIiBvcGFjaXR5PSIwLjMiLz48L3N2Zz4=',
-                iconSize: [40, 40],
-                iconAnchor: [20, 20],
-              }),
-            }).addTo(map).bindPopup('Tu ubicación actual')
-
-            setUserMarker(newMarker)
+            // Llamar callback para mostrar el punto azul
+            onUserLocation([latitude, longitude])
           },
           (error) => {
             console.error('Error de geolocalización:', error)
             alert('No se pudo acceder a tu ubicación')
+            onIgnoreClick(false) // Desactivar flag si hay error
           }
         )
       } else {
         alert('Tu navegador no soporta geolocalización')
+        onIgnoreClick(false) // Desactivar flag si hay error
       }
     } catch (error) {
       console.error('Error:', error)
+      onIgnoreClick(false) // Desactivar flag si hay error
     }
   }
 
@@ -84,6 +86,8 @@ export default function ReportMap({ onLocationSelect, selectedLocation }) {
   const [position, setPosition] = useState(null)
   const [mapCenter, setMapCenter] = useState(null)
   const [mapZoom, setMapZoom] = useState(13)
+  const [userLocation, setUserLocation] = useState(null)
+  const [ignoreNextClick, setIgnoreNextClick] = useState(false)
 
   useEffect(() => {
     // Obtener ubicación del usuario al cargar
@@ -135,6 +139,12 @@ export default function ReportMap({ onLocationSelect, selectedLocation }) {
   function LocationMarker() {
     useMapEvents({
       click(e) {
+        // Si ignoreNextClick es true, no hacer nada
+        if (ignoreNextClick) {
+          setIgnoreNextClick(false)
+          return
+        }
+
         const { lat, lng } = e.latlng
         setPosition({ lat, lng })
         onLocationSelect(lat, lng)
@@ -178,7 +188,15 @@ export default function ReportMap({ onLocationSelect, selectedLocation }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <LocationButton />
+      <LocationButton onUserLocation={setUserLocation} onIgnoreClick={setIgnoreNextClick} />
+
+      {/* Marcador azul de ubicación actual */}
+      {userLocation && (
+        <Marker position={userLocation} icon={userLocationIcon}>
+          <Popup>Tu ubicación actual</Popup>
+        </Marker>
+      )}
+
       <LocationMarker />
     </MapContainer>
   )

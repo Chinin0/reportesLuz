@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
   },
   build: {
-    outDir: 'dist-build',
+    outDir: 'dist',
     emptyOutDir: false,
   },
 })

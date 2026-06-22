@@ -13,59 +13,6 @@ const createStatusIcon = (status) => {
   })
 }
 
-function LocationButton() {
-  const map = useMap()
-  const [userMarker, setUserMarker] = useState(null)
-
-  const handleLocation = () => {
-    try {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords
-            // Solo centrar el mapa, sin agregar marcador
-            map.setView([latitude, longitude], 15)
-          },
-          (error) => {
-            console.error('Error de geolocalización:', error)
-            alert('No se pudo acceder a tu ubicación')
-          }
-        )
-      } else {
-        alert('Tu navegador no soporta geolocalización')
-      }
-    } catch (error) {
-      console.error('Error:', error)
-    }
-  }
-
-  return (
-    <button
-      onClick={handleLocation}
-      style={{
-        position: 'absolute',
-        bottom: '80px',
-        right: '10px',
-        zIndex: 400,
-        background: 'white',
-        border: '1px solid #ccc',
-        padding: '8px',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontSize: '18px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-        width: '40px',
-        height: '40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-      title="Ir a mi ubicación"
-    >
-      🎯
-    </button>
-  )
-}
 
 export default function AdminMap({ reports, selectedReport, onSelectReport }) {
   const [mapCenter, setMapCenter] = useState(null)
@@ -139,8 +86,6 @@ export default function AdminMap({ reports, selectedReport, onSelectReport }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-
-      <LocationButton />
 
       {reports
         .filter((report) => report.status !== 'resuelto' && report.status !== 'rechazado')

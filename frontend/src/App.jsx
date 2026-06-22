@@ -13,6 +13,25 @@ function App() {
     setIsAdmin(!!token)
   }, [])
 
+  const handleMyLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords
+          window.dispatchEvent(new CustomEvent('goToLocation', {
+            detail: { latitude, longitude, markLocation: true }
+          }))
+        },
+        (error) => {
+          console.error('Error de geolocalización:', error)
+          alert('No se pudo acceder a tu ubicación')
+        }
+      )
+    } else {
+      alert('Tu navegador no soporta geolocalización')
+    }
+  }
+
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
     setIsAdmin(false)
@@ -29,20 +48,22 @@ function App() {
         <header className="app-header">
           <div className="header-content">
             <Link to="/" className="logo">
-              🔦 Reportes de Alumbrado Público
+              🔦
             </Link>
             <nav className="nav">
-              <Link to="/" className="nav-link">Reportar Problema</Link>
+              <button onClick={handleMyLocation} className="my-location-btn" title="Mi ubicación actual">
+                📍
+              </button>
               {isAdmin ? (
                 <>
                   <Link to="/admin" className="nav-link">Panel Admin</Link>
                   <button onClick={handleLogout} className="logout-btn">
-                    Cerrar Sesión
+                    Cerrar
                   </button>
                 </>
               ) : (
-                <button onClick={() => setShowLoginModal(true)} className="login-btn">
-                  Admin Login
+                <button onClick={() => setShowLoginModal(true)} className="login-btn-small">
+                  Admin
                 </button>
               )}
             </nav>
@@ -126,10 +147,9 @@ function LoginModal({ onClose, onSuccess }) {
           />
           {error && <p className="error">{error}</p>}
           <button type="submit" disabled={loading}>
-            {loading ? 'Cargando...' : 'Ingresar'}
+            {loading ? 'Conectando...' : 'Ingresar'}
           </button>
         </form>
-        <button onClick={onClose} className="close-btn">×</button>
       </div>
     </div>
   )

@@ -1,12 +1,25 @@
 import ReportMap from '../components/Map/ReportMap'
 import ReportForm from '../components/Forms/ReportForm'
 import BottomSheet from '../components/BottomSheet'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '../styles/pages.css'
 
 export default function CreateReportPage() {
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [submitted, setSubmitted] = useState(false)
+  const [mapInstance, setMapInstance] = useState(null)
+
+  useEffect(() => {
+    const handleGoToLocation = (e) => {
+      const { latitude, longitude } = e.detail
+      if (mapInstance) {
+        mapInstance.setView([latitude, longitude], 15)
+      }
+    }
+
+    window.addEventListener('goToLocation', handleGoToLocation)
+    return () => window.removeEventListener('goToLocation', handleGoToLocation)
+  }, [mapInstance])
 
   const handleLocationSelect = (lat, lng) => {
     setSelectedLocation({ latitude: lat, longitude: lng })
@@ -27,7 +40,7 @@ export default function CreateReportPage() {
 
       <div className="content-grid">
         <div className="map-section">
-          <ReportMap onLocationSelect={handleLocationSelect} selectedLocation={selectedLocation} />
+          <ReportMap onLocationSelect={handleLocationSelect} selectedLocation={selectedLocation} onMapReady={setMapInstance} />
           {selectedLocation && (
             <div className="location-badge">
               📍 Ubicación: {selectedLocation.latitude.toFixed(4)}, {selectedLocation.longitude.toFixed(4)}
@@ -35,14 +48,12 @@ export default function CreateReportPage() {
           )}
         </div>
 
-        {/* Desktop: mostrar forma inline */}
         <div className="form-section">
           {submitted && <div className="success-message">✓ Reporte enviado correctamente!</div>}
           <ReportForm selectedLocation={selectedLocation} onSubmit={handleFormSubmit} />
         </div>
       </div>
 
-      {/* Mobile: Bottom sheet persistente */}
       <BottomSheet isOpen={true}>
         {submitted && <div className="success-message">✓ Reporte enviado correctamente!</div>}
         <ReportForm selectedLocation={selectedLocation} onSubmit={handleFormSubmit} />

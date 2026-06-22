@@ -12,7 +12,6 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({ status: '', priority: '' })
   const [userLocation, setUserLocation] = useState(null)
-  const [showDetailSheet, setShowDetailSheet] = useState(false)
 
   useEffect(() => {
     fetchReports()
@@ -55,12 +54,10 @@ export default function AdminPage() {
   const handleReportUpdate = () => {
     fetchReports()
     setSelectedReport(null)
-    setShowDetailSheet(false)
   }
 
   const handleSelectReport = (report) => {
     setSelectedReport(report)
-    setShowDetailSheet(true)
   }
 
   return (
@@ -114,7 +111,7 @@ export default function AdminPage() {
       </div>
 
       {/* Desktop: Modal */}
-      {selectedReport && !showDetailSheet && (
+      {selectedReport && window.innerWidth > 768 && (
         <ReportDetail
           report={selectedReport}
           onClose={() => setSelectedReport(null)}
@@ -123,24 +120,22 @@ export default function AdminPage() {
         />
       )}
 
-      {/* Mobile: Bottom Sheet */}
-      {selectedReport && (
-        <BottomSheet isOpen={showDetailSheet} onClose={() => {
-          setShowDetailSheet(false)
-          setSelectedReport(null)
-        }}>
+      {/* Mobile: Bottom Sheet persistente */}
+      <BottomSheet isOpen={true}>
+        {selectedReport ? (
           <ReportDetail
             report={selectedReport}
-            onClose={() => {
-              setShowDetailSheet(false)
-              setSelectedReport(null)
-            }}
+            onClose={() => setSelectedReport(null)}
             onUpdate={handleReportUpdate}
             userLocation={userLocation}
             isBottomSheet={true}
           />
-        </BottomSheet>
-      )}
+        ) : (
+          <div className="bottom-sheet-empty">
+            <p>Selecciona un reporte para ver detalles</p>
+          </div>
+        )}
+      </BottomSheet>
     </div>
   )
 }

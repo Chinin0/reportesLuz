@@ -7,17 +7,14 @@ import '../styles/pages.css'
 export default function CreateReportPage() {
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [submitted, setSubmitted] = useState(false)
-  const [showSheet, setShowSheet] = useState(false)
 
   const handleLocationSelect = (lat, lng) => {
     setSelectedLocation({ latitude: lat, longitude: lng })
-    setShowSheet(true) // Abrir bottom sheet cuando se selecciona ubicación
   }
 
   const handleFormSubmit = () => {
     setSubmitted(true)
     setSelectedLocation(null)
-    setShowSheet(false)
     setTimeout(() => setSubmitted(false), 3000)
   }
 
@@ -45,8 +42,8 @@ export default function CreateReportPage() {
         </div>
       </div>
 
-      {/* Mobile: Bottom sheet */}
-      <BottomSheet isOpen={showSheet} onClose={() => setShowSheet(false)}>
+      {/* Mobile: Bottom sheet persistente */}
+      <BottomSheet isOpen={true}>
         {submitted && <div className="success-message">✓ Reporte enviado correctamente!</div>}
         <ReportForm selectedLocation={selectedLocation} onSubmit={handleFormSubmit} />
       </BottomSheet>

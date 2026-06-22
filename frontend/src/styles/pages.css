@@ -353,7 +353,7 @@
   }
 
   .map-section {
-    max-height: calc(100vh - 140px); /* Máximo altura para dejar espacio */
+    max-height: calc(100vh - 200px); /* Máximo altura para dejar espacio al bottom sheet */
     height: 100%;
     flex: 1;
   }
@@ -370,9 +370,18 @@
   }
 
   .admin-map-section {
-    max-height: calc(100vh - 140px); /* Máximo altura para dejar espacio */
+    max-height: calc(100vh - 200px); /* Máximo altura para dejar espacio al bottom sheet */
     height: 100%;
     flex: 1;
+  }
+
+  .bottom-sheet-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: #999;
+    text-align: center;
   }
 
   .admin-list-section {

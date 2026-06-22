@@ -1,19 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import '../styles/bottomsheet.css'
 
-export default function BottomSheet({ children, isOpen, onClose }) {
+export default function BottomSheet({ children, isOpen }) {
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState(0)
-  const [translateY, setTranslateY] = useState(100)
+  const [translateY, setTranslateY] = useState(85)
   const sheetRef = useRef(null)
-
-  useEffect(() => {
-    if (isOpen) {
-      setTranslateY(70)
-    } else {
-      setTranslateY(100)
-    }
-  }, [isOpen])
 
   const handleMouseDown = (e) => {
     setIsDragging(true)
@@ -24,18 +16,18 @@ export default function BottomSheet({ children, isOpen, onClose }) {
     if (!isDragging) return
 
     const diff = e.clientY - dragStart
-    const percent = Math.max(20, Math.min(100, translateY + (diff / window.innerHeight) * 100))
+    const percent = Math.max(15, Math.min(85, translateY + (diff / window.innerHeight) * 100))
     setTranslateY(percent)
   }
 
   const handleMouseUp = () => {
     setIsDragging(false)
 
-    if (translateY > 60) {
-      setTranslateY(100)
-      onClose()
-    } else {
-      setTranslateY(20)
+    // Snap a posición cercana
+    if (translateY > 70) {
+      setTranslateY(85) // Pico mínimo
+    } else if (translateY < 40) {
+      setTranslateY(15) // Expandido
     }
   }
 
@@ -51,58 +43,44 @@ export default function BottomSheet({ children, isOpen, onClose }) {
   }, [isDragging, dragStart, translateY])
 
   return (
-    <>
-      {isOpen && (
-        <div
-          className="bottom-sheet-overlay"
-          onClick={() => {
-            setTranslateY(100)
-            onClose()
-          }}
-          style={{
-            opacity: Math.max(0, 1 - translateY / 100),
-            pointerEvents: translateY > 80 ? 'none' : 'auto',
-          }}
-        />
-      )}
-
+    <div
+      ref={sheetRef}
+      className="bottom-sheet-persistent"
+      style={{
+        transform: `translateY(${translateY}%)`,
+      }}
+    >
+      {/* Drag Handle */}
       <div
-        ref={sheetRef}
-        className="bottom-sheet"
-        style={{
-          transform: `translateY(${translateY}%)`,
+        className="bottom-sheet-handle"
+        onMouseDown={handleMouseDown}
+        onTouchStart={(e) => {
+          setIsDragging(true)
+          setDragStart(e.touches[0].clientY)
+        }}
+        onTouchMove={(e) => {
+          if (!isDragging) return
+          const diff = e.touches[0].clientY - dragStart
+          const percent = Math.max(15, Math.min(85, translateY + (diff / window.innerHeight) * 100))
+          setTranslateY(percent)
+        }}
+        onTouchEnd={() => {
+          setIsDragging(false)
+          if (translateY > 70) {
+            setTranslateY(85)
+          } else if (translateY < 40) {
+            setTranslateY(15)
+          }
         }}
       >
-        <div
-          className="bottom-sheet-handle"
-          onMouseDown={handleMouseDown}
-          onTouchStart={(e) => {
-            setIsDragging(true)
-            setDragStart(e.touches[0].clientY)
-          }}
-          onTouchMove={(e) => {
-            if (!isDragging) return
-            const diff = e.touches[0].clientY - dragStart
-            const percent = Math.max(20, Math.min(100, translateY + (diff / window.innerHeight) * 100))
-            setTranslateY(percent)
-          }}
-          onTouchEnd={() => {
-            setIsDragging(false)
-            if (translateY > 60) {
-              setTranslateY(100)
-              onClose()
-            } else {
-              setTranslateY(20)
-            }
-          }}
-        >
-          <div className="bottom-sheet-line" />
-        </div>
-
-        <div className="bottom-sheet-content">
-          {children}
-        </div>
+        <div className="bottom-sheet-line" />
+        <span className="bottom-sheet-title">Detalles del Reporte</span>
       </div>
-    </>
+
+      {/* Content con Scroll */}
+      <div className="bottom-sheet-content">
+        {children}
+      </div>
+    </div>
   )
 }

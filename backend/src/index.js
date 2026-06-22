@@ -3,9 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const db = require('./config/database');
+const authRoutes = require('./routes/authRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const errorHandler = require('./middleware/errorHandler');
-const { loginAdmin } = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,34 +21,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Ruta de login para admin (ANTES de las rutas generales)
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Email y contraseña requeridos',
-      });
-    }
-
-    const result = await loginAdmin(email, password);
-
-    if (!result.success) {
-      return res.status(401).json(result);
-    }
-
-    return res.json(result);
-  } catch (error) {
-    console.error('Login error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error en login',
-      error: error.message,
-    });
-  }
-});
+// Rutas de autenticación
+app.use('/api/auth', authRoutes);
 
 // Rutas de API
 app.use('/api', reportRoutes);
